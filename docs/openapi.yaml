@@ -1,0 +1,403 @@
+openapi: 3.1.0
+info:
+  title: Begento Product Catalog & Multi-Currency Pricing API
+  description: |
+    RESTful API desarrollada en Laravel 12 con arquitectura limpia, DTOs y Actions invokables
+    para la gestión de productos y precios multi-divisa.
+  version: 1.0.0
+servers:
+  - url: http://localhost:80
+    description: Laravel Sail Local Server
+  - url: http://localhost:8000
+    description: Artisan Serve Local Server
+paths:
+  /api/products:
+    get:
+      summary: Listar productos
+      description: Retorna la lista completa de productos registrados con su divisa base.
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Lista de productos obtenida exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+    post:
+      summary: Crear un nuevo producto
+      description: Registra un nuevo producto en el catálogo.
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: Producto creado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '422':
+          description: Error de validación.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+  /api/products/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador único del producto
+        schema:
+          type: integer
+    get:
+      summary: Obtener producto por ID
+      description: Retorna el detalle completo de un producto por su ID, incluyendo divisa base y precios.
+      tags:
+        - Products
+      responses:
+        '200':
+          description: Detalle del producto.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Actualizar un producto
+      description: Actualiza los datos comerciales y de costos de un producto existente.
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductRequest'
+      responses:
+        '200':
+          description: Producto actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Product'
+        '404':
+          description: Producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Error de validación.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+    delete:
+      summary: Eliminar un producto
+      description: Elimina un producto y todos sus precios asociados en cascada.
+      tags:
+        - Products
+      responses:
+        '204':
+          description: Producto eliminado exitosamente (sin contenido).
+        '404':
+          description: Producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/products/{id}/prices:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Identificador del producto
+        schema:
+          type: integer
+    get:
+      summary: Obtener lista de precios de un producto
+      description: Retorna los precios registrados para el producto en diferentes divisas.
+      tags:
+        - Product Prices
+      responses:
+        '200':
+          description: Lista de precios por divisa.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductPrice'
+        '404':
+          description: Producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Crear o actualizar precio para un producto
+      description: Registra o actualiza (upsert) el precio del producto en la divisa indicada.
+      tags:
+        - Product Prices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductPriceRequest'
+      responses:
+        '200':
+          description: Precio existente actualizado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProductPrice'
+        '201':
+          description: Nuevo precio registrado exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/ProductPrice'
+        '404':
+          description: Producto no encontrado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Error de validación (divisa inexistente o precio negativo).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+
+components:
+  schemas:
+    Currency:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: US Dollar
+        symbol:
+          type: string
+          example: USD
+        exchange_rate:
+          type: number
+          format: float
+          example: 1.0000
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Mechanical Keyboard
+        description:
+          type: string
+          nullable: true
+          example: RGB tactile mechanical keyboard
+        price:
+          type: number
+          format: float
+          example: 129.99
+        currency_id:
+          type: integer
+          example: 1
+        currency:
+          $ref: '#/components/schemas/Currency'
+        tax_cost:
+          type: number
+          format: float
+          example: 20.00
+        manufacturing_cost:
+          type: number
+          format: float
+          example: 45.00
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductPrice'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ProductPrice:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        product_id:
+          type: integer
+          example: 1
+        currency_id:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: float
+          example: 119.50
+        currency:
+          $ref: '#/components/schemas/Currency'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+        - price
+        - currency_id
+      properties:
+        name:
+          type: string
+          example: Wireless Mouse
+        description:
+          type: string
+          nullable: true
+          example: Ergonomic wireless mouse
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 49.99
+        currency_id:
+          type: integer
+          example: 1
+        tax_cost:
+          type: number
+          format: float
+          minimum: 0
+          default: 0
+          example: 8.50
+        manufacturing_cost:
+          type: number
+          format: float
+          minimum: 0
+          default: 0
+          example: 15.00
+
+    UpdateProductRequest:
+      type: object
+      required:
+        - name
+        - price
+        - currency_id
+      properties:
+        name:
+          type: string
+          example: Wireless Mouse Pro
+        description:
+          type: string
+          nullable: true
+          example: Upgraded 4K sensor
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 69.99
+        currency_id:
+          type: integer
+          example: 1
+        tax_cost:
+          type: number
+          format: float
+          minimum: 0
+          example: 10.00
+        manufacturing_cost:
+          type: number
+          format: float
+          minimum: 0
+          example: 20.00
+
+    CreateProductPriceRequest:
+      type: object
+      required:
+        - currency_id
+        - price
+      properties:
+        currency_id:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: float
+          minimum: 0
+          example: 450000.00
+
+    ValidationError:
+      type: object
+      properties:
+        message:
+          type: string
+          example: The price field must be at least 0.
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Resource not found.

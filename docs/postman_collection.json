@@ -1,0 +1,177 @@
+{
+  "info": {
+    "_postman_id": "begento-api-collection-2026",
+    "name": "Begento API - Technical Test",
+    "description": "Colección completa de endpoints para la prueba técnica de Backend en Laravel 12 con Sail y arquitectura limpia.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "1. Get Products List",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Obtener lista completa de productos con divisa base."
+          }
+        },
+        {
+          "name": "2. Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mechanical Gaming Keyboard\",\n  \"description\": \"RGB tactile switches, hot-swappable\",\n  \"price\": 129.99,\n  \"currency_id\": 1,\n  \"tax_cost\": 20.00,\n  \"manufacturing_cost\": 45.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Crear un nuevo producto en el catálogo."
+          }
+        },
+        {
+          "name": "3. Get Product By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "description": "Consultar el detalle de un producto por su identificador."
+          }
+        },
+        {
+          "name": "4. Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mechanical Gaming Keyboard Pro\",\n  \"description\": \"Upgraded PBT keycaps & lubricated switches\",\n  \"price\": 149.99,\n  \"currency_id\": 1,\n  \"tax_cost\": 25.00,\n  \"manufacturing_cost\": 50.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "description": "Actualizar datos y precios de un producto existente."
+          }
+        },
+        {
+          "name": "5. Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "1"]
+            },
+            "description": "Eliminar un producto y sus precios asociados en cascada."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product Prices",
+      "item": [
+        {
+          "name": "6. Get Product Prices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/1/prices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "1", "prices"]
+            },
+            "description": "Consultar la lista de precios de un producto en diferentes divisas."
+          }
+        },
+        {
+          "name": "7. Create or Update Product Price",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency_id\": 2,\n  \"price\": 119.50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/1/prices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "1", "prices"]
+            },
+            "description": "Registrar o actualizar (upsert) el precio del producto en otra divisa."
+          }
+        }
+      ]
+    }
+  ]
+}

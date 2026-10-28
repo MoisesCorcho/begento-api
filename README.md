@@ -1,58 +1,91 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Begento API — Prueba Técnica Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API RESTful desarrollada en **Laravel 12** con **PHP 8.5**, ejecutada en contenedores con **Laravel Sail** (MySQL 8.4), testeada con **Pest** y construida bajo **Spec-Driven Development (SDD)** con arquitectura limpia (DTOs, Actions invokables y Form Requests perimetrales).
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Requisitos y Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **PHP**: 8.5
+- **Framework**: Laravel 12 con Laravel Boost
+- **Base de Datos**: MySQL 8.4 (en Sail) / SQLite (para tests ultrarrápidos en memoria)
+- **Contenedores**: Docker & Laravel Sail (`compose.yaml`)
+- **Testing**: Pest PHP
+- **Estilo de Código**: Laravel Pint (`strict_types=1`, PSR-12, conventions)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Puesta en Marcha con Sail
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clonar el repositorio y entrar al proyecto:**
+   ```bash
+   cd begento_api
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. **Copiar variables de entorno:**
+   ```bash
+   cp .env.example .env
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+3. **Iniciar los contenedores en segundo plano:**
+   ```bash
+   ./vendor/bin/sail up -d
+   ```
 
-## Agentic Development
+4. **Ejecutar migraciones y seeders (divisas iniciales USD, EUR, COP, GBP):**
+   ```bash
+   ./vendor/bin/sail artisan migrate:fresh --seed
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+5. **Acceder a la API y Documentación:**
+   - **Root API Status:** [http://localhost](http://localhost)
+   - **Documentación Interactiva Swagger / OpenAPI:** [http://localhost/docs](http://localhost/docs)
+   - **Especificación OpenAPI YAML:** [http://localhost/docs/openapi.yaml](http://localhost/docs/openapi.yaml)
+   - **Colección Postman:** [docs/postman_collection.json](docs/postman_collection.json)
 
+---
+
+## 🧪 Pruebas Automatizadas (Pest)
+
+La suite de pruebas cubre el 100% de los endpoints, incluyendo caminos felices (200/201/204), validaciones de negocio (422), manejo de no encontrados (404) e integridad referencial en cascada.
+
+Para ejecutar los tests:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+./vendor/bin/sail bin pest
+# O directamente en el host:
+vendor/bin/pest
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 📋 Endpoints de la API
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Todos los endpoints responden en formato JSON y están disponibles tanto bajo el prefijo canónico `/api/` como directamente en la raíz para cumplimiento literal con la especificación técnica:
 
-## Code of Conduct
+| Método | Endpoint | Descripción | Status |
+|--------|----------|-------------|--------|
+| `GET` | `/api/products` | Obtener lista de productos con su divisa base | `200 OK` |
+| `POST` | `/api/products` | Crear un nuevo producto | `201 Created` |
+| `GET` | `/api/products/{id}` | Obtener detalle de un producto por ID | `200 OK` / `404` |
+| `PUT` | `/api/products/{id}` | Actualizar un producto existente | `200 OK` / `422` / `404` |
+| `DELETE` | `/api/products/{id}` | Eliminar un producto y sus precios en cascada | `204 No Content` / `404` |
+| `GET` | `/api/products/{id}/prices` | Obtener lista de precios en diferentes divisas | `200 OK` / `404` |
+| `POST` | `/api/products/{id}/prices` | Crear o actualizar (upsert) precio en divisa | `201 Created` / `200 OK` |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📦 Documentación y Postman
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Swagger UI:** Navegar a [http://localhost/docs](http://localhost/docs).
+2. **Postman / Insomnia:**
+   - Importar el archivo [`docs/postman_collection.json`](docs/postman_collection.json).
+   - La variable `baseUrl` viene preconfigurada como `http://localhost`.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🏛️ Decisiones de Arquitectura y Convenciones
+
+- **Layout de Código:** *Tipo primero, área después* (`app/Actions/Products/`, `app/DTOs/Products/`, `app/Http/Requests/Products/`, `app/Http/Resources/Products/`).
+- **Thin Controllers:** Los controladores se limitan a validar a través de Form Requests, transformar a DTOs tipados inmutables y delegar a Actions invokables (`__invoke`).
+- **Integridad y Transacciones:** Las operaciones de persistencia multi-modelo se ejecutan dentro de `DB::transaction`.
+- **Espec-Driven Development (SDD):** Las especificaciones de cada feature se encuentran en [`specs/`](specs/).
