@@ -23,6 +23,8 @@ Route::get('/docs', function () {
 Route::get('/docs/openapi.yaml', function () {
     return response(file_get_contents(base_path('docs/openapi.yaml')), 200, [
         'Content-Type' => 'text/yaml; charset=utf-8',
+        'Access-Control-Allow-Origin' => '*',
+        'Access-Control-Allow-Methods' => 'GET, OPTIONS',
     ]);
 });
 

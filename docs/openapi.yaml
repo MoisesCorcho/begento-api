@@ -6,6 +6,10 @@ info:
     para la gestión de productos y precios multi-divisa.
   version: 1.0.0
 servers:
+  - url: /
+    description: Servidor actual
+  - url: https://begento-api.moisescorchodev.tech
+    description: VPS Producción
   - url: http://localhost:80
     description: Laravel Sail Local Server
   - url: http://localhost:8000
