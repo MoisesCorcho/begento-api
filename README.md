@@ -1,13 +1,13 @@
 # Begento API — Prueba Técnica Backend
 
-API RESTful desarrollada en **Laravel 12** con **PHP 8.5**, ejecutada en contenedores con **Laravel Sail** (MySQL 8.4), testeada con **Pest** y construida bajo **Spec-Driven Development (SDD)** con arquitectura limpia (DTOs, Actions invokables y Form Requests perimetrales).
+API RESTful desarrollada en **Laravel 13** con **PHP 8.5**, ejecutada en contenedores con **Laravel Sail** (MySQL 8.4), testeada con **Pest** y construida bajo **Spec-Driven Development (SDD)** con arquitectura limpia (DTOs, Actions invokables y Form Requests perimetrales).
 
 ---
 
 ## Requisitos y Stack
 
 - **PHP**: 8.5
-- **Framework**: Laravel 12 con Laravel Boost
+- **Framework**: Laravel 13 con Laravel Boost
 - **Base de Datos**: MySQL 8.4 (en Sail) / SQLite (para tests en memoria)
 - **Contenedores**: Docker y Laravel Sail (`compose.yaml`)
 - **Testing**: Pest PHP
