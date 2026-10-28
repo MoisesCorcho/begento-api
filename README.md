@@ -4,18 +4,18 @@ API RESTful desarrollada en **Laravel 12** con **PHP 8.5**, ejecutada en contene
 
 ---
 
-## 🚀 Requisitos y Stack
+## Requisitos y Stack
 
 - **PHP**: 8.5
 - **Framework**: Laravel 12 con Laravel Boost
-- **Base de Datos**: MySQL 8.4 (en Sail) / SQLite (para tests ultrarrápidos en memoria)
-- **Contenedores**: Docker & Laravel Sail (`compose.yaml`)
+- **Base de Datos**: MySQL 8.4 (en Sail) / SQLite (para tests en memoria)
+- **Contenedores**: Docker y Laravel Sail (`compose.yaml`)
 - **Testing**: Pest PHP
-- **Estilo de Código**: Laravel Pint (`strict_types=1`, PSR-12, conventions)
+- **Estilo de Código**: Laravel Pint (`strict_types=1`, PSR-12, convenciones)
 
 ---
 
-## 🛠️ Puesta en Marcha con Sail
+## Puesta en Marcha con Sail
 
 1. **Clonar el repositorio y entrar al proyecto:**
    ```bash
@@ -45,7 +45,7 @@ API RESTful desarrollada en **Laravel 12** con **PHP 8.5**, ejecutada en contene
 
 ---
 
-## 🧪 Pruebas Automatizadas (Pest)
+## Pruebas Automatizadas (Pest)
 
 La suite de pruebas cubre el 100% de los endpoints, incluyendo caminos felices (200/201/204), validaciones de negocio (422), manejo de no encontrados (404) e integridad referencial en cascada.
 
@@ -58,7 +58,7 @@ vendor/bin/pest
 
 ---
 
-## 📋 Endpoints de la API
+## Endpoints de la API
 
 Todos los endpoints responden en formato JSON y están disponibles tanto bajo el prefijo canónico `/api/` como directamente en la raíz para cumplimiento literal con la especificación técnica:
 
@@ -74,7 +74,7 @@ Todos los endpoints responden en formato JSON y están disponibles tanto bajo el
 
 ---
 
-## 📦 Documentación y Postman
+## Documentación y Postman
 
 1. **Swagger UI:** Navegar a [http://localhost/docs](http://localhost/docs).
 2. **Postman / Insomnia:**
@@ -83,9 +83,9 @@ Todos los endpoints responden en formato JSON y están disponibles tanto bajo el
 
 ---
 
-## 🏛️ Decisiones de Arquitectura y Convenciones
+## Decisiones de Arquitectura y Convenciones
 
 - **Layout de Código:** *Tipo primero, área después* (`app/Actions/Products/`, `app/DTOs/Products/`, `app/Http/Requests/Products/`, `app/Http/Resources/Products/`).
 - **Thin Controllers:** Los controladores se limitan a validar a través de Form Requests, transformar a DTOs tipados inmutables y delegar a Actions invokables (`__invoke`).
 - **Integridad y Transacciones:** Las operaciones de persistencia multi-modelo se ejecutan dentro de `DB::transaction`.
-- **Espec-Driven Development (SDD):** Las especificaciones de cada feature se encuentran en [`specs/`](specs/).
+- **Spec-Driven Development (SDD):** Las especificaciones de cada feature se encuentran en [`specs/`](specs/).
