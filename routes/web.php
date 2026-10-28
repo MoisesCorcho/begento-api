@@ -27,8 +27,8 @@ Route::get('/docs/openapi.yaml', function () {
 });
 
 // Alias routes without /api prefix for literal compliance with Prueba Backend.pdf
-Route::middleware('api')->group(function () {
+Route::middleware('api')->name('alias.')->group(function () {
     Route::apiResource('products', ProductController::class);
-    Route::get('products/{product}/prices', [ProductPriceController::class, 'index']);
-    Route::post('products/{product}/prices', [ProductPriceController::class, 'store']);
+    Route::get('products/{product}/prices', [ProductPriceController::class, 'index'])->name('products.prices.index');
+    Route::post('products/{product}/prices', [ProductPriceController::class, 'store'])->name('products.prices.store');
 });
